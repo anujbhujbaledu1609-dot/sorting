@@ -1,54 +1,24 @@
-def app(environ, start_response):
-    method = environ.get("REQUEST_METHOD", "GET")
+# Program: Sort numbers entered by the user
 
-    if method == "POST":
-        try:
-            size = int(environ.get("CONTENT_LENGTH", 0))
-            body = environ["wsgi.input"].read(size).decode()
-            data = body.split("=")[1] if "=" in body else ""
+# Step 1: Take input from user
+# Example input: 5 2 9 1 7
+numbers_input = input("Enter numbers separated by spaces: ")
 
-            nums = list(map(int, data.replace("+", " ").split()))
-            nums.sort()
+# Step 2: Convert input string into a list of integers
+try:
+    numbers = list(map(int, numbers_input.split()))
+except ValueError:
+    print("❌ Invalid input! Please enter only numbers separated by spaces.")
+    exit()
 
-            response = f"""
-            <html>
-            <body>
-                <h3>Sorted Numbers:</h3>
-                <p>{nums}</p>
-                <a href="/">Go back</a>
-            </body>
-            </html>
-            """
-        except:
-            response = """
-            <html>
-            <body>
-                <h3>Invalid input</h3>
-                <a href="/">Go back</a>
-            </body>
-            </html>
-            """
+# Step 3: Sort the list in ascending order
+numbers.sort()
 
-    else:
-        response = """
-        <html>
-        <body>
-            <h2>Enter numbers (space separated)</h2>
-            <form method="POST">
-                <input name="numbers" placeholder="e.g. 5 2 9 1">
-                <button type="submit">Sort</button>
-            </form>
-        </body>
-        </html>
-        """
+# Step 4: Display the result
+print("\n✅ Sorted numbers (ascending):")
+print(numbers)
 
-    start_response("200 OK", [("Content-Type", "text/html")])
-    return [response.encode()]
-
-
-# For local run or GAE entry
-if __name__ == "__main__":
-    from wsgiref.simple_server import make_server
-    server = make_server("0.0.0.0", 8080, app)
-    print("Running on http://0.0.0.0:8080")
-    server.serve_forever()
+# Optional: Descending order
+numbers.sort(reverse=True)
+print("\n⬇️ Sorted numbers (descending):")
+print(numbers)
